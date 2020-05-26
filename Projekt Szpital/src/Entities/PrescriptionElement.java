@@ -30,4 +30,8 @@ public class PrescriptionElement {
         this.dose = dose;
     }
 
+    @Override
+    public String toString() {
+        return ID + " " + dose;
+    }
 }

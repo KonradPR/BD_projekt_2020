@@ -12,24 +12,24 @@ public class Supplier {
 
     @Column(name = "CompanyName") private String companyName;
     @Column(name = "Phone") private String phone;
-    @Column(name = "Address") private String address;
+    @Embedded private Address address;
 
     @ManyToMany(mappedBy = "suppliers",cascade = CascadeType.PERSIST)
     Set<Medicine> medicines = new HashSet<>();
 
     public Supplier(){}
 
-    public Supplier(String companyName, String phone, String address){
+    public Supplier(String companyName, String phone, String street, String city, String zipCode){
         this.companyName = companyName;
         this.phone = phone;
-        this.address = address;
+        this.address = new Address(street,city,zipCode);
     }
 
     public String toString(){return supplierID+" "+companyName+" "+phone+" "+address;}
-    //?DONE? dodałem metode w TransactionHandler która korzysta z obu metod skladowych
-    //TODO dodawanie po obydwuch stronach relacji bo teraz trzeba dodawać ręcznie
+
     public void addMedicine(Medicine medicine){
         medicines.add(medicine);
     }
 
 }
+

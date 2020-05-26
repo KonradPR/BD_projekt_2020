@@ -14,6 +14,14 @@ public class Prescription {
     @Column(name = "Given")private Date given;
     @Column(name = "Expires")private Date expires;
 
+    @ManyToOne
+    @JoinColumn(name = "Doctor")
+    private Doctor doctor;
+
+    @ManyToOne
+    @JoinColumn(name = "Patient")
+    private Patient patient;
+
     @OneToMany(mappedBy = "prescription",cascade = CascadeType.PERSIST, orphanRemoval = true)
     private Set<PrescriptionElement> prescriptionElements = new HashSet<>();
 
@@ -30,5 +38,10 @@ public class Prescription {
 
     public int getId() {
         return prescriptionNumber;
+    }
+
+    @Override
+    public String toString() {
+        return prescriptionNumber + " " + given + "-" + expires + " " + doctor.getFullName() + " " + patient.getFullName();
     }
 }

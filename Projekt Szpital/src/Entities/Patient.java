@@ -24,7 +24,7 @@ public class Patient {
 
     public Patient(String name, String surname, Date dateOfBirth, String gender){
         this.name = name;
-        this.surname = name;
+        this.surname = surname;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
     }
@@ -33,8 +33,19 @@ public class Patient {
         return patientID+" "+name+" "+surname+" "+dateOfBirth.toString()+" "+gender;
     }
 
+    public String getFullName() {
+        return name + " " + surname;
+    }
+
     public void addPrescription(Prescription prescription){
         prescriptions.add(prescription);
     }
 
+    //Setters
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
 }

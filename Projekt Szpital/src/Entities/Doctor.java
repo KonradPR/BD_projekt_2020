@@ -39,8 +39,30 @@ public class Doctor {
         return employeeID+" "+name+" "+surname+" "+phone+" "+email+" "+speciality;
     }
 
+    public String getFullName() {
+        return name + " " + surname;
+    }
+
+    //Setters
     public void addPrescription(Prescription prescription){
         this.prescriptions.add(prescription);
     }
-
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+    public void setSpeciality(String speciality) {
+        this.speciality = speciality;
+    }
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
 }

@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class TransactionHandler {
     public void addDoctor(String name, String surname, Date dateOfBirth, String phone, String email, String speciality) throws Exception {
         final Session session = ourSessionFactory.openSession();
         try {
-            Transaction tx = session.getTransaction();
+            Transaction tx = session.beginTransaction();
             Doctor doc = new Doctor(name, surname, dateOfBirth, phone, email, speciality);
             session.save(doc);
             tx.commit();
@@ -39,7 +40,7 @@ public class TransactionHandler {
     public void addPatient(String name, String surname, Date dateOfBirth, String gender) throws Exception {
         final Session session = ourSessionFactory.openSession();
         try {
-            Transaction tx = session.getTransaction();
+            Transaction tx = session.beginTransaction();
             Patient p = new Patient(name, surname, dateOfBirth,gender);
             session.save(p);
             tx.commit();
@@ -48,11 +49,11 @@ public class TransactionHandler {
         }
     }
 
-    public void addSupplier(String companyName, String phone, String address) throws Exception{
+    public void addSupplier(String companyName, String phone, String street, String city, String zipCode) throws Exception{
         final Session session = ourSessionFactory.openSession();
         try {
-            Transaction tx = session.getTransaction();
-            Supplier s = new Supplier(companyName,phone,address);
+            Transaction tx = session.beginTransaction();
+            Supplier s = new Supplier(companyName,phone,street,city,zipCode);
             session.save(s);
             tx.commit();
         } finally {
@@ -63,7 +64,7 @@ public class TransactionHandler {
     public void addMedicine(String suggestedDose,int inStock) throws Exception{
         final Session session = ourSessionFactory.openSession();
         try {
-            Transaction tx = session.getTransaction();
+            Transaction tx = session.beginTransaction();
             Medicine m = new Medicine(suggestedDose,inStock);
             session.save(m);
             tx.commit();
@@ -75,7 +76,7 @@ public class TransactionHandler {
     public void addMedicineSupplier(Medicine m,Supplier s){
         final Session session = ourSessionFactory.openSession();
         try {
-            Transaction tx = session.getTransaction();
+            Transaction tx = session.beginTransaction();
             m.addSupplier(s);
             s.addMedicine(m);
             session.update(s);
@@ -92,7 +93,7 @@ public class TransactionHandler {
         if(meds.size()!=dosages.size()||meds.size()==0) throw new IllegalArgumentException("Presciption cannot be empty, and all meds need dosage");
         final Session session = ourSessionFactory.openSession();
         try{
-            Transaction tx = session.getTransaction();
+            Transaction tx = session.beginTransaction();
             Prescription p = new Prescription(given,expires);
             List<PrescriptionElement> elems = new ArrayList<>();
             for(int i=0;i<meds.size();i++){

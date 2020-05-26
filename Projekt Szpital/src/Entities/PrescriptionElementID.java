@@ -40,4 +40,9 @@ public class PrescriptionElementID implements Serializable {
     public int hashCode() {
         return Objects.hash(prescriptionID, evidenceID);
     }
+
+    @Override
+    public String toString() {
+        return "Pre: " + prescriptionID + " Med: " + evidenceID;
+    }
 }
