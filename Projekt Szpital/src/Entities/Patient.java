@@ -29,6 +29,10 @@ public class Patient {
         this.gender = gender;
     }
 
+    public String toString(){
+        return patientID+" "+name+" "+surname+" "+dateOfBirth.toString()+" "+gender;
+    }
+
     public void addPrescription(Prescription prescription){
         prescriptions.add(prescription);
     }

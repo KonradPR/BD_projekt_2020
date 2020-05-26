@@ -23,6 +23,7 @@ public class PrescriptionElementID implements Serializable {
         return prescriptionID;
     }
 
+    public PrescriptionElementID(){}
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -31,6 +31,8 @@ public class Medicine {
         prescriptionElements.add(prescriptionElement);
     }
 
+    public String toString(){return evidenceNumber+" "+suggestedDose+" "+inStock;}
+
     public void addSupplier(Supplier supplier){
         suppliers.add(supplier);
     }

@@ -25,6 +25,8 @@ public class Supplier {
         this.address = address;
     }
 
+    public String toString(){return supplierID+" "+companyName+" "+phone+" "+address;}
+    //?DONE? dodałem metode w TransactionHandler która korzysta z obu metod skladowych
     //TODO dodawanie po obydwuch stronach relacji bo teraz trzeba dodawać ręcznie
     public void addMedicine(Medicine medicine){
         medicines.add(medicine);

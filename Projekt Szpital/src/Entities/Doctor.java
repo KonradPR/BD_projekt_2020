@@ -35,6 +35,10 @@ public class Doctor {
         this.speciality = speciality;
     }
 
+    public String toString(){
+        return employeeID+" "+name+" "+surname+" "+phone+" "+email+" "+speciality;
+    }
+
     public void addPrescription(Prescription prescription){
         this.prescriptions.add(prescription);
     }
