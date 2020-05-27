@@ -16,7 +16,7 @@ public class Medicine {
     @OneToMany(mappedBy = "medicine",cascade = CascadeType.PERSIST, orphanRemoval = true)
     private Set<PrescriptionElement> prescriptionElements = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
     private Set<Supplier> suppliers = new HashSet<>();;
 
     public Medicine(){}

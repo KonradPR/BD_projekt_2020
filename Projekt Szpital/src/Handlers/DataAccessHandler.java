@@ -7,8 +7,11 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.print.Doc;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DataAccessHandler {
@@ -26,10 +29,14 @@ public class DataAccessHandler {
     }
 
     //templates
-    private <T> List<T> getAllEntities(Class<T> type)throws Exception{
+    private static <T> List<T> getAllEntities(Class<T> type)throws Exception{
         final Session session = ourSessionFactory.openSession();
         try{
-            return session.createQuery(session.getCriteriaBuilder().createQuery(type)).getResultList();
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery<T> q = builder.createQuery(type);
+            q.from(type);
+            List<T>res = session.createQuery(q).getResultList();
+            return res;
         }finally{
             session.close();
         }
@@ -78,17 +85,31 @@ public class DataAccessHandler {
     }
 
     //Return list of patients that are currently taking given medicine
-    public List<Patient> getAllPatientCurrentlyOnMed(int medId)throws Exception{
+    public List<Patient> getAllPatientsCurrentlyOnMed(int medId)throws Exception{
         final Session session = ourSessionFactory.openSession();
         try {
             Medicine med = getMedicineById(medId);
             if (med == null) return new ArrayList<>();
-            Query q = session.createQuery("from Patient left outer join Prescription" +
-                    " on Prescription in elements(Patient.prescriptions)" +
-                    " left outer join PrescriptionElement  " +
-                    "on Prescription.prescriptionNumber = PrescriptionElement.prescription.prescriptionNumber" +
-                    " left outer join Medicine on Medicine.evidenceNumber = PrescriptionElement.medicine.evidenceNumber where Medicine.evidenceNumber" +
-                    " = :medId ");
+            java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
+            Query q = session.createQuery("from Prescription as p where exists " +
+                    "(from PrescriptionElement as el where el.medicine.evidenceNumber = :medId and el.prescription = p) and " +
+                    "p.expires >= :now").setParameter("medId",medId).setParameter("now",now);
+            return q.getResultList();
+        }finally {
+            session.close();
+        }
+    }
+
+    //Return list of patients that used to take given medicine
+    public List<Patient> getAllPatientsThatUsedMed(int medId)throws Exception{
+        final Session session = ourSessionFactory.openSession();
+        try {
+            Medicine med = getMedicineById(medId);
+            if (med == null) return new ArrayList<>();
+            java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
+            Query q = session.createQuery("from Prescription as p where exists " +
+                    "(from PrescriptionElement as el where el.medicine.evidenceNumber = :medId and el.prescription = p) and " +
+                    "p.expires < :now").setParameter("medId",medId).setParameter("now",now);
             return q.getResultList();
         }finally {
             session.close();

@@ -14,7 +14,7 @@ public class Supplier {
     @Column(name = "Phone") private String phone;
     @Embedded private Address address;
 
-    @ManyToMany(mappedBy = "suppliers",cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "suppliers",cascade = CascadeType.PERSIST)
     Set<Medicine> medicines = new HashSet<>();
 
     public Supplier(){}
