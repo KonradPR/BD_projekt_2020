@@ -1,6 +1,7 @@
 package Handlers;
 
 import Entities.*;
+import LogicUtils.Parser;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -10,6 +11,10 @@ import org.hibernate.resource.transaction.spi.TransactionStatus;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.temporal.ChronoUnit;
+import java.util.concurrent.TimeUnit;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 public class TransactionHandler {
     private static final SessionFactory ourSessionFactory;
@@ -83,6 +88,36 @@ public class TransactionHandler {
             session.update(m);
             tx.commit();
         } finally {
+            session.close();
+        }
+    }
+
+    //This method return true if there are enough dosages in stock to fill prescription;
+    private boolean isEnoughMedicineInStock(Date start,Date end, int medId, String Dosage)throws Exception{
+        final Session session = ourSessionFactory.openSession();
+        try{
+            Medicine m = session.get(Medicine.class,medId);
+            if(Parser.parseDosageUnit(m.getSuggestedDose())==Parser.parseDosageUnit(Dosage)) throw new IllegalArgumentException("Dosage type is different than in stock units");
+            int days = (int) TimeUnit.DAYS.convert(start.getTime()-end.getTime(), TimeUnit.MILLISECONDS);
+            int neededDosages = days * Parser.parseDosageValue(Dosage);
+            int avaliableDosages = m.getInStock() * Parser.parseDosageValue(m.getSuggestedDose());
+            if(neededDosages>avaliableDosages)return false;
+            return true;
+
+        }finally{
+            session.close();
+        }
+    }
+
+    //This meethod returns number of dosages left after filling prescription
+    private int medicineDosagesLeftAfterFill(Date start,Date end,String suggested,int inStock,String Dosage) throws Exception{
+        final Session session = ourSessionFactory.openSession();
+        try{
+            int days = (int) TimeUnit.DAYS.convert(start.getTime()-end.getTime(), TimeUnit.MILLISECONDS);
+            int neededDosages = days * Parser.parseDosageValue(Dosage);
+            int avaliableDosages = inStock * Parser.parseDosageValue(suggested);
+            return avaliableDosages - neededDosages;
+        }finally{
             session.close();
         }
     }

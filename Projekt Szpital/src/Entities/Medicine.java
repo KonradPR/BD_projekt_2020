@@ -30,6 +30,13 @@ public class Medicine {
     public void addPrescriptionElement(PrescriptionElement prescriptionElement){
         prescriptionElements.add(prescriptionElement);
     }
+    public String getSuggestedDose(){
+        return this.suggestedDose;
+    }
+
+    public int getInStock() {
+        return inStock;
+    }
 
     public String toString(){return evidenceNumber+" "+suggestedDose+" "+inStock;}
 
