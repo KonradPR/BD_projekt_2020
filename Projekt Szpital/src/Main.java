@@ -35,7 +35,6 @@ public class Main {
             DataAccessHandler d = new DataAccessHandler();
             DataModificationHandler dm = new DataModificationHandler();
 
-
          }catch(Exception e){
             System.out.println(e);
             e.printStackTrace();

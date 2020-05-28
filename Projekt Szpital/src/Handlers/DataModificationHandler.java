@@ -1,12 +1,16 @@
 package Handlers;
 
 import Entities.Doctor;
+import Entities.Medicine;
 import Entities.Patient;
+import Entities.Supplier;
 import LogicUtils.Parser;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+
+import java.util.List;
 
 public class DataModificationHandler {
     private static final SessionFactory ourSessionFactory;
@@ -74,6 +78,32 @@ public class DataModificationHandler {
                 session.update(patient);
                 tx.commit();
             }
+        }finally {
+            session.close();
+        }
+    }
+
+    public void placeOrderForMedicine(int medicineId, int medicineQuantity, int supplierId) throws Exception{
+        final Session session = ourSessionFactory.openSession();
+        try {
+            DataAccessHandler da = new DataAccessHandler();
+            Transaction tx = session.beginTransaction();
+
+            if(medicineQuantity <= 0) throw new IllegalArgumentException("Quantity has to be grater than 0!");
+            Medicine medicine = da.getMedicineById(medicineId);
+            if(medicine == null) throw new IllegalArgumentException("Medicine does not exist");
+            Supplier supplier = da.getSupplierById(supplierId);
+            if(supplier == null) throw new IllegalArgumentException("Supplier does not exist");
+
+            if(!da.getMedicinesFromSupplier(supplierId).contains(medicine)){
+                System.out.println("Supplier " + supplierId  +" does not supply medicine " + medicineId);
+                return;
+            }
+            int inStock = medicine.getInStock();
+            medicine.setInStock(inStock + medicineQuantity);
+
+            session.update(medicine);
+            tx.commit();
         }finally {
             session.close();
         }

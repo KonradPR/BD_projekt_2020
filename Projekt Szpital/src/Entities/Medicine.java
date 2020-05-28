@@ -51,4 +51,11 @@ public class Medicine {
     public int getId() {
         return evidenceNumber;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj instanceof Medicine) return ((Medicine) obj).evidenceNumber == this.evidenceNumber;
+        return false;
+    }
 }
