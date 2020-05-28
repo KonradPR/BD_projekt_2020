@@ -33,6 +33,11 @@ public class TransactionHandler {
     public void addDoctor(String name, String surname, Date dateOfBirth, String phone, String email, String speciality) throws Exception {
         final Session session = ourSessionFactory.openSession();
         try {
+            if(!Parser.isValidName(name))throw new IllegalArgumentException("Name is invalid");
+            if(!Parser.isValidSurname(surname)) throw new IllegalArgumentException("Surname is invalid");
+            if(dateOfBirth.getTime()-System.currentTimeMillis()>0) throw new IllegalArgumentException("Date of birth is invalid");
+            if(!Parser.isValidPhone(phone))throw new IllegalArgumentException("Argument for phone number is not a valid phone number");
+            if(!Parser.isValidEmail(email)) throw new IllegalArgumentException("Email is invalid");
             Transaction tx = session.beginTransaction();
             Doctor doc = new Doctor(name, surname, dateOfBirth, phone, email, speciality);
             session.save(doc);
@@ -45,6 +50,9 @@ public class TransactionHandler {
     public void addPatient(String name, String surname, Date dateOfBirth, String gender) throws Exception {
         final Session session = ourSessionFactory.openSession();
         try {
+            if(!Parser.isValidName(name))throw new IllegalArgumentException("Name is invalid");
+            if(!Parser.isValidSurname(surname)) throw new IllegalArgumentException("Surname is invalid");
+            if(dateOfBirth.getTime()-System.currentTimeMillis()>0) throw new IllegalArgumentException("Date of birth is invalid");
             Transaction tx = session.beginTransaction();
             Patient p = new Patient(name, surname, dateOfBirth,gender);
             session.save(p);
@@ -57,6 +65,7 @@ public class TransactionHandler {
     public void addSupplier(String companyName, String phone, String street, String city, String zipCode) throws Exception{
         final Session session = ourSessionFactory.openSession();
         try {
+            if(!Parser.isValidPhone(phone))throw new IllegalArgumentException("Argument for phone number is not a valid phone number");
             Transaction tx = session.beginTransaction();
             Supplier s = new Supplier(companyName,phone,street,city,zipCode);
             session.save(s);
@@ -69,6 +78,10 @@ public class TransactionHandler {
     public void addMedicine(String suggestedDose,int inStock) throws Exception{
         final Session session = ourSessionFactory.openSession();
         try {
+            //Throws exception if suggested dosage cannot be parsed with expected convention;
+            Parser.parseDosageValue(suggestedDose);
+            Parser.parseDosageUnit(suggestedDose);
+            if(inStock<0)throw new IllegalArgumentException("Stock state cannot be negative");
             Transaction tx = session.beginTransaction();
             Medicine m = new Medicine(suggestedDose,inStock);
             session.save(m);
