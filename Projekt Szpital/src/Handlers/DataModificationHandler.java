@@ -2,6 +2,7 @@ package Handlers;
 
 import Entities.Doctor;
 import Entities.Patient;
+import LogicUtils.Parser;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -29,11 +30,23 @@ public class DataModificationHandler {
 
             Doctor doctor = da.getDoctorById(id);
             if(doctor != null) {
-                if (email != null) doctor.setEmail(email);
-                if (name != null) doctor.setName(name);
-                if (phone != null) doctor.setPhone(phone);
+                if (email != null){
+                    if(!Parser.isValidEmail(email)) throw new IllegalArgumentException("Email is invalid");
+                    doctor.setEmail(email);
+                }
+                if (name != null){
+                    if(!Parser.isValidName(name)) throw new IllegalArgumentException("Name is Invalid");
+                    doctor.setName(name);
+                }
+                if (phone != null){
+                    if(!Parser.isValidPhone(phone))throw new IllegalArgumentException("Phone is invalid");
+                    doctor.setPhone(phone);
+                }
                 if (speciality != null) doctor.setSpeciality(speciality);
-                if (surname != null) doctor.setSurname(surname);
+                if (surname != null){
+                    if(!Parser.isValidSurname(surname))throw  new IllegalArgumentException("Surname is invalid");
+                    doctor.setSurname(surname);
+                }
                 session.update(doctor);
                 tx.commit();
             }
@@ -50,8 +63,14 @@ public class DataModificationHandler {
 
             Patient patient = da.getPatientById(id);
             if(patient != null) {
-                if (name != null) patient.setName(name);
-                if (surname != null) patient.setSurname(surname);
+                if (name != null) {
+                    if(!Parser.isValidName(name)) throw new IllegalArgumentException("Name is Invalid");
+                    patient.setName(name);
+                }
+                if (surname != null) {
+                    if(!Parser.isValidSurname(surname))throw  new IllegalArgumentException("Surname is invalid");
+                    patient.setSurname(surname);
+                }
                 session.update(patient);
                 tx.commit();
             }
