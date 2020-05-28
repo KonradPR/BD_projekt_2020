@@ -1,4 +1,6 @@
 import Entities.*;
+import Gui.AppFrame;
+import Gui.AppScene;
 import Handlers.DataAccessHandler;
 import Handlers.DataModificationHandler;
 import Handlers.TransactionHandler;
@@ -31,10 +33,8 @@ public class Main {
 
     public static void main(final String[] args) throws Exception {
         try{
-            TransactionHandler t = new TransactionHandler();
-            DataAccessHandler d = new DataAccessHandler();
-            DataModificationHandler dm = new DataModificationHandler();
-
+            AppFrame af = new AppFrame();
+            af.show(args);
          }catch(Exception e){
             System.out.println(e);
             e.printStackTrace();
