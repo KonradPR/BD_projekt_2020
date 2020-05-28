@@ -22,7 +22,7 @@ public class Prescription {
     @JoinColumn(name = "Patient")
     private Patient patient;
 
-    @OneToMany(mappedBy = "prescription",cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "prescription",cascade = CascadeType.PERSIST)
     private Set<PrescriptionElement> prescriptionElements = new HashSet<>();
 
     public Prescription(){}

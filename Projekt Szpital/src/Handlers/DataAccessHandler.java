@@ -117,43 +117,42 @@ public class DataAccessHandler {
     }
 
 
-    //Get list of all medicines from given prescriptionID
+    //Get list of all PrescriptionElements from given prescriptionID
     public List<PrescriptionElement> getPrescriptionElements(int prescriptionID) throws Exception{
         final Session session = ourSessionFactory.openSession();
         try {
             Prescription prescription = getPrescriptionById(prescriptionID);
             if (prescription == null) return new ArrayList<>();
-            Query q = session.createQuery("from PrescriptionElement left outer join Prescription " +
-                    " on PrescriptionElement in elements(Prescription.prescriptionElements)" +
-                    "where Prescription.id = :prescriptionID");
+            Query q = session.createQuery("from PrescriptionElement as pe where " +
+                    "pe.prescription.id = :prescriptionID").setParameter("prescriptionID",prescriptionID);
             return q.getResultList();
         }finally {
             session.close();
         }
     }
 
-    public List<PrescriptionElement> getMedicineSuppliers(int medId) throws Exception{
+    //Get list of all suppliers that supply given medicine
+    public List<Supplier> getMedicineSuppliers(int medId) throws Exception{
         final Session session = ourSessionFactory.openSession();
         try {
             Medicine med = getMedicineById(medId);
             if (med == null) return new ArrayList<>();
-            Query q = session.createQuery("from Supplier join Medicine " +
-                    "on Medicine in elements(Supplier.medicines)" +
-                    "where Medicine.id = :medId");
+            Query q = session.createQuery("select s from Supplier s join s.medicines m where " +
+                    "m.id = :medId").setParameter("medId",medId);
             return q.getResultList();
         }finally {
             session.close();
         }
     }
 
-    public List<PrescriptionElement> getMedicinesFromSupplier(int supId) throws Exception{
+    //Get list of all medicines supplied by given supplier
+    public List<Medicine> getMedicinesFromSupplier(int supId) throws Exception{
         final Session session = ourSessionFactory.openSession();
         try {
             Supplier supplier = getSupplierById(supId);
             if (supplier == null) return new ArrayList<>();
-            Query q = session.createQuery("from Medicine join Supplier " +
-                    "on Medicine in elements(Supplier.medicines)" +
-                    "where Supplier.id = :supId");
+            Query q = session.createQuery("select m from Medicine m join m.suppliers s where " +
+                    "s.id = :supId").setParameter("supId",supId);
             return q.getResultList();
         }finally {
             session.close();

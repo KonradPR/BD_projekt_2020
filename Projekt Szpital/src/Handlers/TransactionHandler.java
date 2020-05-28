@@ -110,7 +110,8 @@ public class TransactionHandler {
         final Session session = ourSessionFactory.openSession();
         try{
             Medicine m = session.get(Medicine.class,medId);
-            if(Parser.parseDosageUnit(m.getSuggestedDose())==Parser.parseDosageUnit(Dosage)) throw new IllegalArgumentException("Dosage type is different than in stock units");
+            if(Parser.parseDosageUnit(m.getSuggestedDose())!=Parser.parseDosageUnit(Dosage))
+                throw new IllegalArgumentException("Dosage type is different than in stock units");
             int days = (int) TimeUnit.DAYS.convert(start.getTime()-end.getTime(), TimeUnit.MILLISECONDS);
             int neededDosages = days * Parser.parseDosageValue(Dosage);
             int avaliableDosages = m.getInStock() * Parser.parseDosageValue(m.getSuggestedDose());
@@ -126,10 +127,10 @@ public class TransactionHandler {
     private int medicineDosagesLeftAfterFill(Date start,Date end,String suggested,int inStock,String Dosage) throws Exception{
         final Session session = ourSessionFactory.openSession();
         try{
-            int days = (int) TimeUnit.DAYS.convert(start.getTime()-end.getTime(), TimeUnit.MILLISECONDS);
+            int days = Math.abs((int) TimeUnit.DAYS.convert(start.getTime()-end.getTime(), TimeUnit.MILLISECONDS));
             int neededDosages = days * Parser.parseDosageValue(Dosage);
             int avaliableDosages = inStock * Parser.parseDosageValue(suggested);
-            return avaliableDosages - neededDosages;
+            return (avaliableDosages - neededDosages)/Parser.parseDosageValue(suggested);
         }finally{
             session.close();
         }
@@ -154,7 +155,7 @@ public class TransactionHandler {
                 p.addPrescriptionElement(tmp);
                 int afterFill = medicineDosagesLeftAfterFill(given,expires,meds.get(i).getSuggestedDose(),meds.get(i).getInStock(),dosages.get(i));
                 meds.get(i).setInStock(afterFill);
-                session.save(meds.get(i));
+                session.update(meds.get(i));
             }
             Doctor d = session.get(Doctor.class,doctorId);
             Patient t = session.get(Patient.class,patientId);

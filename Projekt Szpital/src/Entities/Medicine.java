@@ -13,7 +13,7 @@ public class Medicine {
     @Column(name = "SuggestedDose") private String suggestedDose;
     @Column(name = "InStock") private int inStock;
 
-    @OneToMany(mappedBy = "medicine",cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "medicine",cascade = CascadeType.PERSIST)
     private Set<PrescriptionElement> prescriptionElements = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
