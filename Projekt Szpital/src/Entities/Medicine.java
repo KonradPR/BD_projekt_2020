@@ -38,6 +38,10 @@ public class Medicine {
         return inStock;
     }
 
+    public void setInStock(int inStock) {
+        this.inStock = inStock;
+    }
+
     public String toString(){return evidenceNumber+" "+suggestedDose+" "+inStock;}
 
     public void addSupplier(Supplier supplier){

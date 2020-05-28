@@ -141,6 +141,10 @@ public class TransactionHandler {
         if(meds.size()!=dosages.size()||meds.size()==0) throw new IllegalArgumentException("Presciption cannot be empty, and all meds need dosage");
         final Session session = ourSessionFactory.openSession();
         try{
+            for(int i=0;i<meds.size();i++){
+                if(!isEnoughMedicineInStock(given,expires,meds.get(i).getId(),dosages.get(i))) throw new IllegalArgumentException("Not enough dosages!");
+
+            }
             Transaction tx = session.beginTransaction();
             Prescription p = new Prescription(given,expires);
             List<PrescriptionElement> elems = new ArrayList<>();
@@ -148,6 +152,9 @@ public class TransactionHandler {
                 PrescriptionElement tmp = new PrescriptionElement(dosages.get(i),p,meds.get(i));
                 elems.add(tmp);
                 p.addPrescriptionElement(tmp);
+                int afterFill = medicineDosagesLeftAfterFill(given,expires,meds.get(i).getSuggestedDose(),meds.get(i).getInStock(),dosages.get(i));
+                meds.get(i).setInStock(afterFill);
+                session.save(meds.get(i));
             }
             Doctor d = session.get(Doctor.class,doctorId);
             Patient t = session.get(Patient.class,patientId);
