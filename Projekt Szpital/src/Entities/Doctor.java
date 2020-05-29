@@ -65,4 +65,26 @@ public class Doctor {
     public void setSurname(String surname) {
         this.surname = surname;
     }
+
+    public int getEmployeeID() {
+        return employeeID;
+    }
+    public String getSurname() {
+        return surname;
+    }
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+    public String getName() {
+        return name;
+    }
+    public String getEmail() {
+        return email;
+    }
+    public String getPhone() {
+        return phone;
+    }
+    public String getSpeciality() {
+        return speciality;
+    }
 }

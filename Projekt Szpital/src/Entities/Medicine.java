@@ -30,10 +30,16 @@ public class Medicine {
     public void addPrescriptionElement(PrescriptionElement prescriptionElement){
         prescriptionElements.add(prescriptionElement);
     }
+
+    public int getId() {
+        return evidenceNumber;
+    }
+    public int getEvidenceNumber() {
+        return evidenceNumber;
+    } //musi byc tak nazwany getter do tableView
     public String getSuggestedDose(){
         return this.suggestedDose;
     }
-
     public int getInStock() {
         return inStock;
     }
@@ -46,10 +52,6 @@ public class Medicine {
 
     public void addSupplier(Supplier supplier){
         suppliers.add(supplier);
-    }
-
-    public int getId() {
-        return evidenceNumber;
     }
 
     @Override

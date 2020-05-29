@@ -31,5 +31,17 @@ public class Supplier {
         medicines.add(medicine);
     }
 
+    public int getSupplierID() {
+        return supplierID;
+    }
+    public String getCompanyName() {
+        return companyName;
+    }
+    public String getPhone() {
+        return phone;
+    }
+    public String getAddress() {
+        return address.toString();
+    }
 }
 

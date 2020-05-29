@@ -48,4 +48,21 @@ public class Patient {
     public void setName(String name) {
         this.name = name;
     }
+
+    //Getters
+    public String getName() {
+        return name;
+    }
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+    public int getPatientID() {
+        return patientID;
+    }
+    public String getGender() {
+        return gender;
+    }
+    public String getSurname() {
+        return surname;
+    }
 }

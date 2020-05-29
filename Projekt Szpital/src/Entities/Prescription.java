@@ -44,4 +44,14 @@ public class Prescription {
     public String toString() {
         return prescriptionNumber + " " + given + "-" + expires + " " + doctor.getFullName() + " " + patient.getFullName();
     }
+
+    public int getPrescriptionNumber() {
+        return prescriptionNumber;
+    }
+    public Date getExpires() {
+        return expires;
+    }
+    public Date getGiven() {
+        return given;
+    }
 }
