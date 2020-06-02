@@ -54,4 +54,20 @@ public class Prescription {
     public Date getGiven() {
         return given;
     }
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public String getDoctorFullName(){
+        return doctor.getFullName();
+    }
+
+    public String getPatientFullName(){
+        return patient.getFullName();
+    }
 }
