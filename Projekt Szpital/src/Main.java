@@ -1,6 +1,9 @@
 import Gui.AppFrame;
+import Handlers.TransactionHandler;
 import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
+
+import java.sql.Date;
 
 public class Main {
     private static final SessionFactory ourSessionFactory;

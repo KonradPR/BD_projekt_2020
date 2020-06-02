@@ -32,7 +32,7 @@ public class Parser {
     }
 
     public static boolean isValidEmail(String str){
-        return Pattern.matches("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}",str);
+        return Pattern.matches("[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}",str);
     }
 
     public static boolean isValidPhone(String str){
@@ -40,7 +40,7 @@ public class Parser {
     }
 
     public static boolean isValidName(String str){
-        return Pattern.matches("[A-Z][a-z]{2,10}]",str);
+        return Pattern.matches("[A-Z][a-z]{2,10}",str);
     }
 
     public static boolean isValidSurname(String str){
