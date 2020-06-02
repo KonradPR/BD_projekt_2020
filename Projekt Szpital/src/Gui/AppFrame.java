@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -28,10 +29,15 @@ public class AppFrame extends Application {
     private BorderPane borderPane;
     private Scene scene;
     private TableView<Patient> patientTable;
+    private VBox buttonsPatient;
     private TableView<Doctor>  doctorTable;
+    private VBox buttonsDoctor;
     private TableView<Medicine>  medicineTable;
+    private VBox buttonsMedicine;
     private TableView<Supplier>  supplierTable;
+    private VBox buttonsSupplier;
     private TableView<Prescription>  prescriptionTable;
+    private VBox buttonsPrescription;
     private MenuBar menuBar;
 
     @Override
@@ -48,11 +54,41 @@ public class AppFrame extends Application {
         medicineTable = createMedicineTable();
         prescriptionTable = createPrescriptionTable();
 
-        createFieldInMenuBar("Pacjenci").setOnMouseClicked(event->{  borderPane.setCenter(patientTable); });
-        createFieldInMenuBar("Lekarze").setOnMouseClicked(event->{  borderPane.setCenter(doctorTable); });
-        createFieldInMenuBar("Dostawcy").setOnMouseClicked(event->{  borderPane.setCenter(supplierTable); });
-        createFieldInMenuBar("Leki").setOnMouseClicked(event->{  borderPane.setCenter(medicineTable); });
-        createFieldInMenuBar("Recepty").setOnMouseClicked(event->{  borderPane.setCenter(prescriptionTable); });
+        Button addPatientButton = new Button("Dodaj Pacjenta");
+        addPatientButton.setOnAction(event -> {
+            System.out.println("nowy pacjent");
+        });
+        Button addDoctorButton = new Button("Dodaj Doktora");
+        Button addMedicineButton = new Button("Dodaj Lek");
+        Button addPrescriptionButton = new Button("Dodaj Recepte");
+        Button addSupplierButton = new Button("Dodaj Dostawce");
+
+        buttonsPatient = new VBox(addPatientButton);
+        buttonsDoctor = new VBox(addDoctorButton);
+        buttonsMedicine = new VBox(addMedicineButton);
+        buttonsPrescription = new VBox(addPrescriptionButton);
+        buttonsSupplier = new VBox(addSupplierButton);
+
+        createFieldInMenuBar("Pacjenci").setOnMouseClicked(event->{
+            borderPane.setCenter(patientTable);
+            borderPane.setRight(buttonsPatient);
+        });
+        createFieldInMenuBar("Lekarze").setOnMouseClicked(event->{
+            borderPane.setCenter(doctorTable);
+            borderPane.setRight(buttonsDoctor);
+        });
+        createFieldInMenuBar("Dostawcy").setOnMouseClicked(event->{
+            borderPane.setCenter(supplierTable);
+            borderPane.setRight(buttonsSupplier);
+        });
+        createFieldInMenuBar("Leki").setOnMouseClicked(event->{
+            borderPane.setCenter(medicineTable);
+            borderPane.setRight(buttonsMedicine);
+        });
+        createFieldInMenuBar("Recepty").setOnMouseClicked(event->{
+            borderPane.setCenter(prescriptionTable);
+            borderPane.setRight(buttonsPrescription);
+        });
 
         borderPane.setTop(menuBar);
         borderPane.setCenter(new Label("Witaj w szpitalu! Cieszymy się że nie jesteś martwy"));
