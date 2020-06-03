@@ -47,5 +47,12 @@ public class Parser {
         return Pattern.matches("[A-Z][a-z]{1,15}",str);
     }
     
+    public static boolean isValidZipCode(String str){
+        return Pattern.matches("[0-9]{2}-[0-9]{3}|[0-9]{5}",str);
+    }
+
+    public static boolean isValidCity(String str){
+        return Pattern.matches("[A-Z][a-z]{2,20}|[A-Z][a-z]{2,20}\\s[A-Z][a-z]{2,20}",str);
+    }
 
 }

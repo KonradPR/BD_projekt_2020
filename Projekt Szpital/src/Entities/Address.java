@@ -21,4 +21,16 @@ public class Address {
     public String toString() {
         return city + " " + street + " " +zipCode;
     }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
 }

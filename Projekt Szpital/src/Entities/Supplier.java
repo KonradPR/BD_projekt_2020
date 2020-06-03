@@ -43,5 +43,29 @@ public class Supplier {
     public String getAddress() {
         return address.toString();
     }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setCity(String city) {
+        this.address.setCity(city);
+    }
+
+    public void setStreet(String street) {
+        this.address.setStreet(street);
+    }
+
+    public void setZipCode(String zipCode) {
+        this.address.setZipCode(zipCode);
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public void setMedicines(Set<Medicine> medicines) {
+        this.medicines = medicines;
+    }
 }
 

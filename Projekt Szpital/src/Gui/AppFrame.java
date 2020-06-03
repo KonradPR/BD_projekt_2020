@@ -62,6 +62,7 @@ public class AppFrame extends Application {
         stage.setTitle("Hospital Medicine Stockpile App");
         stage.setOnCloseRequest(event -> Platform.exit());
 
+        //Tables
         patientTable = createPatientsTable();
         doctorTable = createDoctorsTable();
         supplierTable = createSupplierTable();
@@ -86,7 +87,10 @@ public class AppFrame extends Application {
         setUpPatientModForm(patientModificationForm);
         GridPane medicineOrderForm = createFormPane();
         setUpMedicineOrderForm(medicineOrderForm);
+        GridPane supplierModificationForm = createFormPane();
+        setUpSupplierModForm(supplierModificationForm);
 
+        //Buttons & events
         Button addPatientButton = new Button("Nowy");
         addPatientButton.setOnAction(event -> { borderPane.setCenter(patientForm); });
         Button addDoctorButton = new Button("Nowy");
@@ -102,12 +106,14 @@ public class AppFrame extends Application {
         modPatientButton.setOnAction(event -> borderPane.setCenter(patientModificationForm));
         Button modDoctorButton = new Button("Edytuj");
         modDoctorButton.setOnAction(event -> borderPane.setCenter(doctorModificationForm));
+        Button modSupplierButton = new Button("Edytuj");
+        modSupplierButton.setOnAction(event -> borderPane.setCenter(supplierModificationForm));
         Button placeOrderButton = new Button("Zamów");
         placeOrderButton.setOnAction(event -> borderPane.setCenter(medicineOrderForm));
 
         Button patientCurOnMedButton = new Button("Zużycie");
         patientCurOnMedButton.setOnAction(event -> {
-            int id = showPopUpForm("ID Leku");
+            int id = idPopUpForm("ID Leku");
             try {
                 patientCurOnMedTable = createPatientsCurOnMedTable(id);
                 borderPane.setCenter(patientCurOnMedTable);
@@ -118,7 +124,7 @@ public class AppFrame extends Application {
 
         Button patientOnMedButton = new Button("Historia");
         patientOnMedButton.setOnAction(event -> {
-            int id = showPopUpForm("ID Leku");
+            int id = idPopUpForm("ID Leku");
             try {
                 patientWhoUsedMedTable = createPatientsWhoUsedMedTable(id);
                 borderPane.setCenter(patientWhoUsedMedTable);
@@ -129,7 +135,7 @@ public class AppFrame extends Application {
 
         Button suppliersOfMedicineButton = new Button("Dostawcy");
         suppliersOfMedicineButton.setOnAction(event -> {
-            int id = showPopUpForm("ID Leku");
+            int id = idPopUpForm("ID Leku");
             try {
                 suppliersOfMedTable = createSupplierOfMedTable(id);
                 borderPane.setCenter(suppliersOfMedTable);
@@ -140,7 +146,7 @@ public class AppFrame extends Application {
 
         Button medicineFromSupplier = new Button("Leki");
         medicineFromSupplier.setOnAction(event -> {
-            int id = showPopUpForm("ID Dostawcy");
+            int id = idPopUpForm("ID Dostawcy");
             try {
                 medsFromSupplierTable = createMedicineFromSupplierTable(id);
                 borderPane.setCenter(medsFromSupplierTable);
@@ -151,8 +157,8 @@ public class AppFrame extends Application {
 
         Button connectSupplierButton = new Button("Dodaj dostawcę");
         connectSupplierButton.setOnAction(event ->{
-            int medId = showPopUpForm("ID Leku");
-            int supId = showPopUpForm("ID Dostawcy");
+            int medId = idPopUpForm("ID Leku");
+            int supId = idPopUpForm("ID Dostawcy");
             try{
                 trH.addMedicineSupplier(acH.getMedicineById(medId),acH.getSupplierById(supId));
             }catch(Exception ex){
@@ -160,11 +166,12 @@ public class AppFrame extends Application {
             }
         });
 
+        //Adding buttons to views
         Button [] buttonsPatient = {addPatientButton,modPatientButton};
         Button [] buttonsDoctor = {addDoctorButton,modDoctorButton};
         Button [] buttonsMedicine = {addMedicineButton,placeOrderButton,patientCurOnMedButton,patientOnMedButton,suppliersOfMedicineButton,connectSupplierButton};
         Button [] buttonsPrescription = {addPrescriptionButton};
-        Button [] buttonsSupplier = {addSupplierButton,medicineFromSupplier};
+        Button [] buttonsSupplier = {addSupplierButton,modSupplierButton,medicineFromSupplier};
 
         panelPatient = createRightSidePanel(buttonsPatient);
         panelDoctor = createRightSidePanel(buttonsDoctor);
@@ -194,7 +201,7 @@ public class AppFrame extends Application {
         });
 
         borderPane.setTop(menuBar);
-        borderPane.setCenter(new Label("Witaj w szpitalu! Cieszymy się że nie jesteś martwy"));
+        borderPane.setCenter(new Label("Witaj w szpitalu!"));
 
         scene = new Scene(borderPane, 800, 600);
         stage.setScene(scene);
@@ -235,8 +242,7 @@ public class AppFrame extends Application {
         return panel;
     }
 
-    //Tables with data
-    //todo ocenic gdzie to powinno byc
+    //Getters for tables
     private ObservableList<Patient> getPatients() throws Exception {
         return FXCollections.observableList(acH.getAllPatients());
     }
@@ -246,6 +252,29 @@ public class AppFrame extends Application {
     private ObservableList<Patient> getPatientsWhoUsedMed(int medId) throws Exception {
         return FXCollections.observableList(acH.getAllPatientsThatUsedMed(medId));
     }
+    private ObservableList<Medicine> getMedicines() throws Exception {
+        return FXCollections.observableList(acH.getAllMedicines());
+    }
+    private ObservableList<Medicine> getMedicinesFromSupplier(int supId) throws Exception {
+        return FXCollections.observableList(acH.getMedicinesFromSupplier(supId));
+    }
+    private ObservableList<Doctor> getDoctors() throws Exception {
+        return FXCollections.observableList(acH.getAllDoctors());
+    }
+    private ObservableList<Supplier> getSuppliers() throws Exception {
+        return FXCollections.observableList(acH.getAllSuppliers());
+    }
+    private ObservableList<Supplier> getSuppliersOfMed(int medId) throws Exception {
+        return FXCollections.observableList(acH.getMedicineSuppliers(medId));
+    }
+    private ObservableList<Prescription> getPrescriptions() throws Exception {
+        return FXCollections.observableList(acH.getAllPrescriptions());
+    }
+    private ObservableList<PrescriptionElement> getPrescriptionsElements(int presId) throws Exception {
+        return FXCollections.observableList(acH.getPrescriptionElements(presId));
+    }
+
+    //Tables with data
     private TableView<Patient> createPatientsTable() throws Exception{
         TableColumn<Patient, Integer> idColumn = new TableColumn<>("ID Pacjenta");
         idColumn.setMinWidth(25);
@@ -327,10 +356,6 @@ public class AppFrame extends Application {
 
         return patientTableView;
     }
-
-    private ObservableList<Doctor> getDoctors() throws Exception {
-        return FXCollections.observableList(acH.getAllDoctors());
-    }
     private TableView<Doctor> createDoctorsTable() throws Exception{
         TableColumn<Doctor, Integer> idColumn = new TableColumn<>("ID Doktora");
         idColumn.setMinWidth(25);
@@ -365,13 +390,6 @@ public class AppFrame extends Application {
         doctorTableView.getColumns().addAll(idColumn,nameColumn,surnameColumn,dateOfBirthColumn,phoneColumn,emailColumn,specialityColumn);
 
         return doctorTableView;
-    }
-
-    private ObservableList<Medicine> getMedicines() throws Exception {
-        return FXCollections.observableList(acH.getAllMedicines());
-    }
-    private ObservableList<Medicine> getMedicinesFromSupplier(int supId) throws Exception {
-        return FXCollections.observableList(acH.getMedicinesFromSupplier(supId));
     }
     private TableView<Medicine> createMedicineTable() throws Exception{
         TableColumn<Medicine, Integer> idColumn = new TableColumn<>("ID Leku");
@@ -419,13 +437,6 @@ public class AppFrame extends Application {
 
         return medicineTableView;
     }
-
-    private ObservableList<Supplier> getSuppliers() throws Exception {
-        return FXCollections.observableList(acH.getAllSuppliers());
-    }
-    private ObservableList<Supplier> getSuppliersOfMed(int medId) throws Exception {
-        return FXCollections.observableList(acH.getMedicineSuppliers(medId));
-    }
     private TableView<Supplier> createSupplierTable() throws Exception{
         TableColumn<Supplier, Integer> idColumn = new TableColumn<>("ID Dostawcy");
         idColumn.setMinWidth(25);
@@ -472,10 +483,6 @@ public class AppFrame extends Application {
 
         return supplierTableView;
     }
-
-    private ObservableList<Prescription> getPrescriptions() throws Exception {
-        return FXCollections.observableList(acH.getAllPrescriptions());
-    }
     private TableView<Prescription> createPrescriptionTable() throws Exception{
         TableColumn<Prescription, Integer> idColumn = new TableColumn<>("ID Recepty");
         idColumn.setMinWidth(25);
@@ -517,10 +524,6 @@ public class AppFrame extends Application {
         });
 
         return medicineTableView;
-    }
-
-    private ObservableList<PrescriptionElement> getPrescriptionsElements(int presId) throws Exception {
-        return FXCollections.observableList(acH.getPrescriptionElements(presId));
     }
     private TableView<PrescriptionElement> createPrescriptionElementsTable(int presId) throws Exception{
         TableColumn<PrescriptionElement, Prescription> prescriptionColumn = new TableColumn<>("ID Recepty");
@@ -830,6 +833,7 @@ public class AppFrame extends Application {
         });
     }
 
+    //Forms for modifying entites
     private void setUpDoctorModForm(GridPane gridPane){
         createFormHeader(gridPane,"Nowy Doktor");
 
@@ -931,7 +935,43 @@ public class AppFrame extends Application {
             }
         });
     }
+    private void setUpSupplierModForm(GridPane gridPane){
+        createFormHeader(gridPane,"Edytuj Dostawcę");
 
+        TextField supplierIdField = createFormTextFiled(gridPane,"ID",1);
+        TextField companyNameField = createFormTextFiled(gridPane,"Nazwa Firmy",2);
+        TextField phoneField = createFormTextFiled(gridPane,"Telefon",3);
+        TextField streetField = createFormTextFiled(gridPane,"Ulica",4);
+        TextField cityField = createFormTextFiled(gridPane,"Miasto",5);
+        TextField zipField = createFormTextFiled(gridPane,"Kod Pocztowy",6);
+        //Save button
+        Button submitButton = createSaveButton(gridPane,7);
+
+        submitButton.setOnAction(event -> {
+            if (supplierIdField.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Puste pole!", "Wpisz ID dostawcy!");
+                return;
+            }
+            int id = Integer.parseInt(supplierIdField.getText());
+            String companyName = companyNameField.getText().isEmpty() ? null : companyNameField.getText();
+            String phone = phoneField.getText().isEmpty() ? null : phoneField.getText();
+            String street = streetField.getText().isEmpty() ? null : streetField.getText();
+            String city = cityField.getText().isEmpty() ? null : cityField.getText();
+            String zipCode = zipField.getText().isEmpty() ? null : zipField.getText();
+
+            try {
+                dmH.modifySupplierById(id,companyName,street,city,zipCode,phone);
+                //refresh table
+                supplierTable.getItems().clear();
+                supplierTable.getItems().addAll(getSuppliers());
+                borderPane.setCenter(supplierTable);
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
+        });
+    }
+
+    //Helpers (creating textfield etc)
     private TextField createFormTextFiled(GridPane gridPane, String labelText, int row){
         Label label = new Label(labelText + " : ");
         gridPane.add(label,0,row);
@@ -977,7 +1017,7 @@ public class AppFrame extends Application {
         alert.show();
     }
 
-    private int showPopUpForm(String textLabel){
+    private int idPopUpForm(String textLabel){
         Stage popupWindow = new Stage();
         popupWindow.initModality(Modality.APPLICATION_MODAL);
         popupWindow.setTitle("Wpisz ID");

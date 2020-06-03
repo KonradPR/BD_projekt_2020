@@ -66,6 +66,8 @@ public class TransactionHandler {
         final Session session = ourSessionFactory.openSession();
         try {
             if(!Parser.isValidPhone(phone))throw new IllegalArgumentException("Argument for phone number is not a valid phone number");
+            if(!Parser.isValidZipCode(zipCode))throw new IllegalArgumentException("Argument for zip code is not a valid zip code");
+            if(!Parser.isValidCity(city))throw new IllegalArgumentException("City is invalid");
             Transaction tx = session.beginTransaction();
             Supplier s = new Supplier(companyName,phone,street,city,zipCode);
             session.save(s);

@@ -83,6 +83,40 @@ public class DataModificationHandler {
         }
     }
 
+    public void modifySupplierById(int id,String companyName,String street,String city,String zipCode,String phone) throws Exception{
+        final Session session = ourSessionFactory.openSession();
+        try {
+            DataAccessHandler da = new DataAccessHandler();
+            Transaction tx = session.beginTransaction();
+
+            Supplier supplier = da.getSupplierById(id);
+            if(supplier != null) {
+                if (companyName != null){
+                    supplier.setCompanyName(companyName);
+                }
+                if (street != null){
+                    supplier.setStreet(street);
+                }
+                if (phone != null){
+                    if(!Parser.isValidPhone(phone))throw new IllegalArgumentException("Phone is invalid");
+                    supplier.setPhone(phone);
+                }
+                if (city != null) {
+                    if(Parser.isValidCity(city)) throw new IllegalArgumentException("City is invalid");
+                    supplier.setCity(city);
+                }
+                if (zipCode != null){
+                    if(!Parser.isValidZipCode(zipCode))throw  new IllegalArgumentException("ZipCode is invalid");
+                    supplier.setZipCode(zipCode);
+                }
+                session.update(supplier);
+                tx.commit();
+            }
+        }finally {
+            session.close();
+        }
+    }
+
     public void placeOrderForMedicine(int medicineId, int medicineQuantity, int supplierId) throws Exception{
         final Session session = ourSessionFactory.openSession();
         try {
