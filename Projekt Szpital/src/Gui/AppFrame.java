@@ -18,11 +18,12 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AppFrame extends Application {
 
@@ -33,19 +34,19 @@ public class AppFrame extends Application {
     private BorderPane borderPane;
     private Scene scene;
     private TableView<Patient> patientTable;
-    private VBox buttonsPatient;
+    private VBox panelPatient;
     private TableView<Doctor>  doctorTable;
-    private VBox buttonsDoctor;
+    private VBox panelDoctor;
     private TableView<Medicine>  medicineTable;
-    private VBox buttonsMedicine;
+    private VBox panelMedicine;
     private TableView<Supplier>  supplierTable;
-    private VBox buttonsSupplier;
+    private VBox panelSupplier;
     private TableView<Prescription>  prescriptionTable;
-    private VBox buttonsPrescription;
+    private VBox panelPrescription;
     private MenuBar menuBar;
 
     @Override
-    public void start(Stage stage) throws Exception{
+    public void start(Stage stage) throws Exception {
         borderPane = new BorderPane();
         menuBar = new MenuBar();
 
@@ -58,6 +59,7 @@ public class AppFrame extends Application {
         medicineTable = createMedicineTable();
         prescriptionTable = createPrescriptionTable();
 
+        //Forms
         GridPane patientForm = createFormPane();
         setUpPatientForm(patientForm);
         GridPane doctorForm = createFormPane();
@@ -69,52 +71,62 @@ public class AppFrame extends Application {
         GridPane supplierForm = createFormPane();
         setUpSupplierFrom(supplierForm);
 
-        Button addPatientButton = new Button("Dodaj Pacjenta");
-        addPatientButton.setOnAction(event -> {
-            borderPane.setCenter(patientForm);
-        });
-        Button addDoctorButton = new Button("Dodaj Doktora");
-        addDoctorButton.setOnAction(event -> {
-            borderPane.setCenter(doctorForm);
-        });
-        Button addMedicineButton = new Button("Dodaj Lek");
-        addMedicineButton.setOnAction(event -> {
-            borderPane.setCenter(medicineForm);
-        });
-        Button addPrescriptionButton = new Button("Dodaj Recepte");
-        addPrescriptionButton.setOnAction(event -> {
-            borderPane.setCenter(prescriptionForm);
-        });
-        Button addSupplierButton = new Button("Dodaj Dostawce");
-        addSupplierButton.setOnAction(event -> {
-            borderPane.setCenter(supplierForm);
-        });
+        GridPane doctorModificationForm = createFormPane();
+        setUpDoctorModForm(doctorModificationForm);
+        GridPane patientModificationForm = createFormPane();
+        setUpPatientModForm(patientModificationForm);
+        GridPane medicineOrderForm = createFormPane();
+        setUpMedicineOrderForm(medicineOrderForm);
 
-        buttonsPatient = createRightSidePanel(addPatientButton);
-        buttonsDoctor = createRightSidePanel(addDoctorButton);
-        buttonsMedicine = createRightSidePanel(addMedicineButton);
-        buttonsPrescription = createRightSidePanel(addPrescriptionButton);
-        buttonsSupplier = createRightSidePanel(addSupplierButton);
+        Button addPatientButton = new Button("Nowy");
+        addPatientButton.setOnAction(event -> { borderPane.setCenter(patientForm); });
+        Button addDoctorButton = new Button("Nowy");
+        addDoctorButton.setOnAction(event -> { borderPane.setCenter(doctorForm);});
+        Button addMedicineButton = new Button("Nowy");
+        addMedicineButton.setOnAction(event -> {borderPane.setCenter(medicineForm);});
+        Button addPrescriptionButton = new Button("Nowy");
+        addPrescriptionButton.setOnAction(event -> { borderPane.setCenter(prescriptionForm); });
+        Button addSupplierButton = new Button("Nowy");
+        addSupplierButton.setOnAction(event -> { borderPane.setCenter(supplierForm); });
+
+        Button modPatientButton = new Button("Edytuj");
+        modPatientButton.setOnAction(event -> borderPane.setCenter(patientModificationForm));
+        Button modDoctorButton = new Button("Edytuj");
+        modDoctorButton.setOnAction(event -> borderPane.setCenter(doctorModificationForm));
+        Button placeOrderButton = new Button("Zamów");
+        placeOrderButton.setOnAction(event -> borderPane.setCenter(medicineOrderForm));
+
+        Button [] buttonsPatient = {addPatientButton,modPatientButton};
+        Button [] buttonsDoctor = {addDoctorButton,modDoctorButton};
+        Button [] buttonsMedicine = {addMedicineButton,placeOrderButton};
+        Button [] buttonsPrescription = {addPrescriptionButton};
+        Button [] buttonsSupplier = {addSupplierButton};
+
+        panelPatient = createRightSidePanel(buttonsPatient);
+        panelDoctor = createRightSidePanel(buttonsDoctor);
+        panelMedicine = createRightSidePanel(buttonsMedicine);
+        panelPrescription = createRightSidePanel(buttonsPrescription);
+        panelSupplier = createRightSidePanel(buttonsSupplier);
 
         createFieldInMenuBar("Pacjenci").setOnMouseClicked(event->{
             borderPane.setCenter(patientTable);
-            borderPane.setRight(buttonsPatient);
+            borderPane.setRight(panelPatient);
         });
         createFieldInMenuBar("Lekarze").setOnMouseClicked(event->{
             borderPane.setCenter(doctorTable);
-            borderPane.setRight(buttonsDoctor);
+            borderPane.setRight(panelDoctor);
         });
         createFieldInMenuBar("Dostawcy").setOnMouseClicked(event->{
             borderPane.setCenter(supplierTable);
-            borderPane.setRight(buttonsSupplier);
+            borderPane.setRight(panelSupplier);
         });
         createFieldInMenuBar("Leki").setOnMouseClicked(event->{
             borderPane.setCenter(medicineTable);
-            borderPane.setRight(buttonsMedicine);
+            borderPane.setRight(panelMedicine);
         });
         createFieldInMenuBar("Recepty").setOnMouseClicked(event->{
             borderPane.setCenter(prescriptionTable);
-            borderPane.setRight(buttonsPrescription);
+            borderPane.setRight(panelPrescription);
         });
 
         borderPane.setTop(menuBar);
@@ -137,7 +149,7 @@ public class AppFrame extends Application {
     }
 
     //Right side panel
-    private VBox createRightSidePanel(Button button){ //zawsze mozna zmienic na Button[] buttons i zrobic fora
+    private VBox createRightSidePanel(Button [] buttons){ //zawsze mozna zmienic na Button[] buttons i zrobic fora
         VBox panel = new VBox();
         panel.setAlignment(Pos.TOP_CENTER);
         panel.setPadding(new Insets(10));
@@ -152,7 +164,9 @@ public class AppFrame extends Application {
         title.setFont(Font.font("Arial", 14));
 
         panel.getChildren().add(title);
-        panel.getChildren().add(button);
+        for(Button button : buttons){
+            panel.getChildren().add(button);
+        }
 
         return panel;
     }
@@ -317,10 +331,10 @@ public class AppFrame extends Application {
         gridPane.setPadding(new Insets(40,40,40,40));
         gridPane.setHgap(10);
         gridPane.setVgap(10);
-        ColumnConstraints columnConstraints1 = new ColumnConstraints(150,100,Double.MAX_VALUE);
+        ColumnConstraints columnConstraints1 = new ColumnConstraints(150,150,Double.MAX_VALUE);
         columnConstraints1.setHalignment(HPos.RIGHT);
-        ColumnConstraints columnConstraints2 = new ColumnConstraints(200,200,Double.MAX_VALUE);
-        columnConstraints2.setHgrow(Priority.ALWAYS);
+        ColumnConstraints columnConstraints2 = new ColumnConstraints(150,150,Double.MAX_VALUE);
+        columnConstraints2.setHgrow(Priority.SOMETIMES);
         gridPane.getColumnConstraints().addAll(columnConstraints1,columnConstraints2);
         return gridPane;
     }
@@ -405,7 +419,7 @@ public class AppFrame extends Application {
                 return;
             }
             String name = nameField.getText();
-            String surname = speicialityField.getText();
+            String surname = surnameField.getText();
             Date date = Date.valueOf(dateField.getValue());
             String phone = phoneField.getText();
             String email = emailFiled.getText();
@@ -473,7 +487,6 @@ public class AppFrame extends Application {
             }
         });
     }
-    //todo ogarnac czemu wpisana dawnka nie chce przejsc weryfikacji regexa
     private void setUpMedicineFrom(GridPane gridPane){
         createFormHeader(gridPane,"Nowy Lek");
 
@@ -514,10 +527,49 @@ public class AppFrame extends Application {
         TextField doctorField = createFormTextFiled(gridPane,"ID Doktora",3);
         TextField patientField = createFormTextFiled(gridPane,"ID Pacjenta",4);
 
-        TextField medsField = createFormTextFiled(gridPane,"Ważna do",2); // todo wtf jak to ogarnac
-        TextField expiersField = createFormTextFiled(gridPane,"Ważna do",2); //i to też ^
+        TextField medsField = createFormTextFiled(gridPane,"ID Leku",5);
+        TextField dosageFiled = createFormTextFiled(gridPane,"Dawka",6);
+        List<String> dosages = new ArrayList<>();
+        List<Medicine> medicines = new ArrayList<>();
 
-        Button submitButton = createSaveButton(gridPane,5); //todo zmienic row na (chyba) 7 jak bedzie gotowa reszta
+        Button addMedButton = new Button("Dodaj lek");
+        addMedButton.setPrefHeight(40);
+        addMedButton.setDefaultButton(true);
+        addMedButton.setPrefWidth(100);
+        gridPane.add(addMedButton, 3, 6, 2, 1);
+        GridPane.setHalignment(addMedButton, HPos.CENTER);
+        GridPane.setMargin(addMedButton, new Insets(0, 0,0,0));
+
+        addMedButton.setOnAction(event ->{
+            if (medsField.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Puste pole!", "Wpisz ID leku!");
+                return;
+            }
+            if (dosageFiled.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Puste pole!", "Wpisz dawke!");
+                return;
+            }
+            int medId = Integer.parseInt(medsField.getText());
+            String dosage = dosageFiled.getText();
+            try {
+                if(acH.getMedicineById(medId) != null){
+                    medicines.add(acH.getMedicineById(medId));
+                    dosages.add(dosage);
+                    showAlert(Alert.AlertType.CONFIRMATION,gridPane.getScene().getWindow(),"Ok","Dodano lek do recepty!");
+                    medsField.clear();
+                    dosageFiled.clear();
+                }
+                else{
+                    showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Lek nie istnieje", "Wybierz inny lek!");
+                    return;
+                }
+            }
+            catch(Exception ex){
+                System.out.println(ex);
+            }
+        });
+
+        Button submitButton = createSaveButton(gridPane,7); //todo zmienic row na (chyba) 7 jak bedzie gotowa reszta
         submitButton.setOnAction(event -> {
             if (givenField.getValue().toString().isEmpty()) { //XD
                 showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Puste pole!", "Wpisz datę wystawienia!");
@@ -539,14 +591,117 @@ public class AppFrame extends Application {
             Date expires = Date.valueOf(expiresField.getValue());
             int doctorId = Integer.parseInt(doctorField.getText());
             int patientId = Integer.parseInt(patientField.getText());
-
+            doctorField.clear();
+            patientField.clear();
             try {
-                trH.addPrescription(given, expires,doctorId,patientId,null,null); //todo zmienic meds i dosages
+                trH.addPrescription(given, expires,doctorId,patientId,medicines,dosages);
                 //refresh table
                 prescriptionTable.getItems().clear();
                 prescriptionTable.getItems().addAll(getPrescriptions());
                 //change view back to medicine list
                 borderPane.setCenter(prescriptionTable);
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
+        });
+    }
+
+    private void setUpDoctorModForm(GridPane gridPane){
+        createFormHeader(gridPane,"Nowy Doktor");
+
+        TextField doctorIdField = createFormTextFiled(gridPane,"ID",1);
+        TextField nameField = createFormTextFiled(gridPane,"Imie",2);
+        TextField surnameField = createFormTextFiled(gridPane,"Nazwisko",3);
+        TextField phoneField = createFormTextFiled(gridPane,"Telefon",4);
+        TextField emailFiled = createFormTextFiled(gridPane,"Email",5);
+        TextField speicialityField = createFormTextFiled(gridPane,"Specjalność",6);
+
+        Button submitButton = createSaveButton(gridPane,7);
+        //Saving doctor to database
+        submitButton.setOnAction(event -> {
+            if (doctorIdField.getText().isEmpty()) { //XD
+                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Puste pole!", "Wpisz ID Doktora!");
+                return;
+            }
+            int Id = Integer.parseInt(doctorIdField.getText());
+            String name =  nameField.getText().isEmpty() ? null : nameField.getText() ;
+            String surname = surnameField.getText().isEmpty() ? null : surnameField.getText();
+            String phone = phoneField.getText().isEmpty() ? null : phoneField.getText();
+            String email = emailFiled.getText().isEmpty() ? null : emailFiled.getText();
+            String speciality = speicialityField.getText().isEmpty() ? null : speicialityField.getText();
+            try {
+                dmH.modifyDoctorById(Id,email,name,phone,speciality,surname);
+                //refresh table
+                doctorTable.getItems().clear();
+                doctorTable.getItems().addAll(getDoctors());
+                //change view back to patient list
+                borderPane.setCenter(doctorTable);
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
+        });
+    }
+    private void setUpPatientModForm(GridPane gridPane){
+        createFormHeader(gridPane,"Edytuj Pacjenta");
+
+        TextField patientIDField = createFormTextFiled(gridPane,"ID",1);
+        TextField nameField = createFormTextFiled(gridPane,"Imie",2);
+        TextField surnameField = createFormTextFiled(gridPane,"Nazwisko",3);
+        Button submitButton = createSaveButton(gridPane,4);
+
+        //Saving patient to database
+        submitButton.setOnAction(event -> {
+            if (patientIDField.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Puste pole!", "Wpisz ID pacjenta!");
+                return;
+            }
+            String name =  nameField.getText().isEmpty() ? null : nameField.getText() ;
+            String surname = surnameField.getText().isEmpty() ? null : surnameField.getText();
+            int Id = Integer.parseInt(patientIDField.getText());
+            try {
+                dmH.modifyPatientById(Id,name,surname);
+                //refresh table
+                patientTable.getItems().clear();
+                patientTable.getItems().addAll(getPatients());
+                //change view back to patient list
+                borderPane.setCenter(patientTable);
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
+        });
+    }
+    private void setUpMedicineOrderForm(GridPane gridPane){
+        createFormHeader(gridPane,"Zamów lek");
+
+        TextField medIdField = createFormTextFiled(gridPane,"ID Leku",1);
+        TextField supIdField = createFormTextFiled(gridPane,"ID Dostawcy",2);
+        TextField quantityField = createFormTextFiled(gridPane,"Ilość",3);
+        Button submitButton = createSaveButton(gridPane,4);
+
+        //Saving patient to database
+        submitButton.setOnAction(event -> {
+            if (medIdField.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Puste pole!", "Wpisz ID leku!");
+                return;
+            }
+            if (supIdField.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Puste pole!", "Wpisz ID dostawcy!");
+                return;
+            }
+            if (quantityField.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Puste pole!", "Wpisz ilość leku do zamówienia!");
+                return;
+            }
+            int medId =  Integer.parseInt(medIdField.getText());
+            int supId =  Integer.parseInt(supIdField.getText());
+            int quantity =  Integer.parseInt(quantityField.getText());
+            try {
+                dmH.placeOrderForMedicine(medId,quantity,supId);
+                //refresh table
+                medicineTable.getItems().clear();
+                medicineTable.getItems().addAll(getMedicines());
+                //change view back to patient list
+                borderPane.setCenter(medicineTable);
             } catch (Exception ex) {
                 System.out.println(ex);
             }
