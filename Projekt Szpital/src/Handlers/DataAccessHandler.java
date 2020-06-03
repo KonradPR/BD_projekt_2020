@@ -91,7 +91,7 @@ public class DataAccessHandler {
             Medicine med = getMedicineById(medId);
             if (med == null) return new ArrayList<>();
             java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
-            Query q = session.createQuery("from Prescription as p where exists " +
+            Query q = session.createQuery("select p.patient from Prescription as p where exists " +
                     "(from PrescriptionElement as el where el.medicine.evidenceNumber = :medId and el.prescription = p) and " +
                     "p.expires >= :now").setParameter("medId",medId).setParameter("now",now);
             return q.getResultList();
@@ -107,7 +107,7 @@ public class DataAccessHandler {
             Medicine med = getMedicineById(medId);
             if (med == null) return new ArrayList<>();
             java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
-            Query q = session.createQuery("from Prescription as p where exists " +
+            Query q = session.createQuery("select p.patient from Prescription as p where exists " +
                     "(from PrescriptionElement as el where el.medicine.evidenceNumber = :medId and el.prescription = p) and " +
                     "p.expires < :now").setParameter("medId",medId).setParameter("now",now);
             return q.getResultList();

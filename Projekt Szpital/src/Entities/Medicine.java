@@ -10,6 +10,7 @@ public class Medicine {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "EvidenceNumber") private int evidenceNumber;
 
+    @Column(name = "Name") private String name;
     @Column(name = "SuggestedDose") private String suggestedDose;
     @Column(name = "InStock") private int inStock;
 
@@ -21,7 +22,8 @@ public class Medicine {
 
     public Medicine(){}
 
-    public Medicine(String suggestedDose,int inStock){
+    public Medicine(String name,String suggestedDose,int inStock){
+        this.name = name;
         this.suggestedDose = suggestedDose;
         this.inStock = inStock;
         this.prescriptionElements = new HashSet<>();
@@ -37,6 +39,7 @@ public class Medicine {
     public int getEvidenceNumber() {
         return evidenceNumber;
     } //musi byc tak nazwany getter do tableView
+    public String getName() { return name; }
     public String getSuggestedDose(){
         return this.suggestedDose;
     }

@@ -75,7 +75,7 @@ public class TransactionHandler {
         }
     }
 
-    public void addMedicine(String suggestedDose,int inStock) throws Exception{
+    public void addMedicine(String name,String suggestedDose,int inStock) throws Exception{
         final Session session = ourSessionFactory.openSession();
         try {
             //Throws exception if suggested dosage cannot be parsed with expected convention;
@@ -83,7 +83,7 @@ public class TransactionHandler {
             Parser.parseDosageUnit(suggestedDose);
             if(inStock<0)throw new IllegalArgumentException("Stock state cannot be negative");
             Transaction tx = session.beginTransaction();
-            Medicine m = new Medicine(suggestedDose,inStock);
+            Medicine m = new Medicine(name,suggestedDose,inStock);
             session.save(m);
             tx.commit();
         } finally {

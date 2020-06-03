@@ -8,16 +8,19 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -44,6 +47,12 @@ public class AppFrame extends Application {
     private TableView<Prescription>  prescriptionTable;
     private VBox panelPrescription;
     private MenuBar menuBar;
+
+    private TableView<Patient> patientCurOnMedTable;
+    private TableView<Patient> patientWhoUsedMedTable;
+    private TableView<PrescriptionElement> prescriptionElementTable;
+    private TableView<Supplier> suppliersOfMedTable;
+    private TableView<Medicine> medsFromSupplierTable;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -96,11 +105,66 @@ public class AppFrame extends Application {
         Button placeOrderButton = new Button("Zamów");
         placeOrderButton.setOnAction(event -> borderPane.setCenter(medicineOrderForm));
 
+        Button patientCurOnMedButton = new Button("Zużycie");
+        patientCurOnMedButton.setOnAction(event -> {
+            int id = showPopUpForm("ID Leku");
+            try {
+                patientCurOnMedTable = createPatientsCurOnMedTable(id);
+                borderPane.setCenter(patientCurOnMedTable);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        Button patientOnMedButton = new Button("Historia");
+        patientOnMedButton.setOnAction(event -> {
+            int id = showPopUpForm("ID Leku");
+            try {
+                patientWhoUsedMedTable = createPatientsWhoUsedMedTable(id);
+                borderPane.setCenter(patientWhoUsedMedTable);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        Button suppliersOfMedicineButton = new Button("Dostawcy");
+        suppliersOfMedicineButton.setOnAction(event -> {
+            int id = showPopUpForm("ID Leku");
+            try {
+                suppliersOfMedTable = createSupplierOfMedTable(id);
+                borderPane.setCenter(suppliersOfMedTable);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        Button medicineFromSupplier = new Button("Leki");
+        medicineFromSupplier.setOnAction(event -> {
+            int id = showPopUpForm("ID Dostawcy");
+            try {
+                medsFromSupplierTable = createMedicineFromSupplierTable(id);
+                borderPane.setCenter(medsFromSupplierTable);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        Button connectSupplierButton = new Button("Dodaj dostawcę");
+        connectSupplierButton.setOnAction(event ->{
+            int medId = showPopUpForm("ID Leku");
+            int supId = showPopUpForm("ID Dostawcy");
+            try{
+                trH.addMedicineSupplier(acH.getMedicineById(medId),acH.getSupplierById(supId));
+            }catch(Exception ex){
+                System.out.println(ex);
+            }
+        });
+
         Button [] buttonsPatient = {addPatientButton,modPatientButton};
         Button [] buttonsDoctor = {addDoctorButton,modDoctorButton};
-        Button [] buttonsMedicine = {addMedicineButton,placeOrderButton};
+        Button [] buttonsMedicine = {addMedicineButton,placeOrderButton,patientCurOnMedButton,patientOnMedButton,suppliersOfMedicineButton,connectSupplierButton};
         Button [] buttonsPrescription = {addPrescriptionButton};
-        Button [] buttonsSupplier = {addSupplierButton};
+        Button [] buttonsSupplier = {addSupplierButton,medicineFromSupplier};
 
         panelPatient = createRightSidePanel(buttonsPatient);
         panelDoctor = createRightSidePanel(buttonsDoctor);
@@ -176,6 +240,12 @@ public class AppFrame extends Application {
     private ObservableList<Patient> getPatients() throws Exception {
         return FXCollections.observableList(acH.getAllPatients());
     }
+    private ObservableList<Patient> getPatientsCurOnMed(int medId) throws Exception {
+        return FXCollections.observableList(acH.getAllPatientsCurrentlyOnMed(medId));
+    }
+    private ObservableList<Patient> getPatientsWhoUsedMed(int medId) throws Exception {
+        return FXCollections.observableList(acH.getAllPatientsThatUsedMed(medId));
+    }
     private TableView<Patient> createPatientsTable() throws Exception{
         TableColumn<Patient, Integer> idColumn = new TableColumn<>("ID Pacjenta");
         idColumn.setMinWidth(25);
@@ -199,6 +269,60 @@ public class AppFrame extends Application {
 
         TableView<Patient> patientTableView = new TableView<>();
         patientTableView.setItems(getPatients());
+        patientTableView.getColumns().addAll(idColumn,nameColumn,surnameColumn,dateOfBirthColumn,genderColumn);
+
+        return patientTableView;
+    }
+    private TableView<Patient> createPatientsCurOnMedTable(int medId) throws Exception{
+        TableColumn<Patient, Integer> idColumn = new TableColumn<>("ID Pacjenta");
+        idColumn.setMinWidth(25);
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("patientID"));
+
+        TableColumn<Patient, String> nameColumn = new TableColumn<>("Imię");
+        nameColumn.setMinWidth(100);
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        TableColumn<Patient, String> surnameColumn = new TableColumn<>("Nazwisko");
+        surnameColumn.setMinWidth(100);
+        surnameColumn.setCellValueFactory(new PropertyValueFactory<>("surname"));
+
+        TableColumn<Patient, Date> dateOfBirthColumn = new TableColumn<>("Data Urodzenia");
+        dateOfBirthColumn.setMinWidth(100);
+        dateOfBirthColumn.setCellValueFactory(new PropertyValueFactory<>("dateOfBirth"));
+
+        TableColumn<Patient, String> genderColumn = new TableColumn<>("Płeć");
+        genderColumn.setMinWidth(50);
+        genderColumn.setCellValueFactory(new PropertyValueFactory<>("gender"));
+
+        TableView<Patient> patientTableView = new TableView<>();
+        patientTableView.setItems(getPatientsCurOnMed(medId));
+        patientTableView.getColumns().addAll(idColumn,nameColumn,surnameColumn,dateOfBirthColumn,genderColumn);
+
+        return patientTableView;
+    }
+    private TableView<Patient> createPatientsWhoUsedMedTable(int medId) throws Exception{
+        TableColumn<Patient, Integer> idColumn = new TableColumn<>("ID Pacjenta");
+        idColumn.setMinWidth(25);
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("patientID"));
+
+        TableColumn<Patient, String> nameColumn = new TableColumn<>("Imię");
+        nameColumn.setMinWidth(100);
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        TableColumn<Patient, String> surnameColumn = new TableColumn<>("Nazwisko");
+        surnameColumn.setMinWidth(100);
+        surnameColumn.setCellValueFactory(new PropertyValueFactory<>("surname"));
+
+        TableColumn<Patient, Date> dateOfBirthColumn = new TableColumn<>("Data Urodzenia");
+        dateOfBirthColumn.setMinWidth(100);
+        dateOfBirthColumn.setCellValueFactory(new PropertyValueFactory<>("dateOfBirth"));
+
+        TableColumn<Patient, String> genderColumn = new TableColumn<>("Płeć");
+        genderColumn.setMinWidth(50);
+        genderColumn.setCellValueFactory(new PropertyValueFactory<>("gender"));
+
+        TableView<Patient> patientTableView = new TableView<>();
+        patientTableView.setItems(getPatientsWhoUsedMed(medId));
         patientTableView.getColumns().addAll(idColumn,nameColumn,surnameColumn,dateOfBirthColumn,genderColumn);
 
         return patientTableView;
@@ -246,10 +370,17 @@ public class AppFrame extends Application {
     private ObservableList<Medicine> getMedicines() throws Exception {
         return FXCollections.observableList(acH.getAllMedicines());
     }
+    private ObservableList<Medicine> getMedicinesFromSupplier(int supId) throws Exception {
+        return FXCollections.observableList(acH.getMedicinesFromSupplier(supId));
+    }
     private TableView<Medicine> createMedicineTable() throws Exception{
         TableColumn<Medicine, Integer> idColumn = new TableColumn<>("ID Leku");
         idColumn.setMinWidth(25);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("evidenceNumber"));
+
+        TableColumn<Medicine, String> nameColumn = new TableColumn<>("Nazwa");
+        nameColumn.setMinWidth(80);
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
         TableColumn<Medicine, String> suggestedDoseColumn = new TableColumn<>("Dawka");
         suggestedDoseColumn.setMinWidth(200);
@@ -261,13 +392,39 @@ public class AppFrame extends Application {
 
         TableView<Medicine> medicineTableView = new TableView<>();
         medicineTableView.setItems(getMedicines());
-        medicineTableView.getColumns().addAll(idColumn,suggestedDoseColumn,inStockColumn);
+        medicineTableView.getColumns().addAll(idColumn,nameColumn,suggestedDoseColumn,inStockColumn);
+
+        return medicineTableView;
+    }
+    private TableView<Medicine> createMedicineFromSupplierTable(int supId) throws Exception{
+        TableColumn<Medicine, Integer> idColumn = new TableColumn<>("ID Leku");
+        idColumn.setMinWidth(25);
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("evidenceNumber"));
+
+        TableColumn<Medicine, String> nameColumn = new TableColumn<>("Nazwa");
+        nameColumn.setMinWidth(80);
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        TableColumn<Medicine, String> suggestedDoseColumn = new TableColumn<>("Dawka");
+        suggestedDoseColumn.setMinWidth(200);
+        suggestedDoseColumn.setCellValueFactory(new PropertyValueFactory<>("suggestedDose"));
+
+        TableColumn<Medicine, Integer> inStockColumn = new TableColumn<>("Dostępne");
+        inStockColumn.setMinWidth(100);
+        inStockColumn.setCellValueFactory(new PropertyValueFactory<>("inStock"));
+
+        TableView<Medicine> medicineTableView = new TableView<>();
+        medicineTableView.setItems(getMedicinesFromSupplier(supId));
+        medicineTableView.getColumns().addAll(idColumn,nameColumn,suggestedDoseColumn,inStockColumn);
 
         return medicineTableView;
     }
 
     private ObservableList<Supplier> getSuppliers() throws Exception {
         return FXCollections.observableList(acH.getAllSuppliers());
+    }
+    private ObservableList<Supplier> getSuppliersOfMed(int medId) throws Exception {
+        return FXCollections.observableList(acH.getMedicineSuppliers(medId));
     }
     private TableView<Supplier> createSupplierTable() throws Exception{
         TableColumn<Supplier, Integer> idColumn = new TableColumn<>("ID Dostawcy");
@@ -288,6 +445,29 @@ public class AppFrame extends Application {
 
         TableView<Supplier> supplierTableView = new TableView<>();
         supplierTableView.setItems(getSuppliers());
+        supplierTableView.getColumns().addAll(idColumn,companyNameColumn,phoneColumn,addressColumn);
+
+        return supplierTableView;
+    }
+    private TableView<Supplier> createSupplierOfMedTable(int medId) throws Exception{
+        TableColumn<Supplier, Integer> idColumn = new TableColumn<>("ID Dostawcy");
+        idColumn.setMinWidth(25);
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("supplierID"));
+
+        TableColumn<Supplier, String> companyNameColumn = new TableColumn<>("Nazwa Firmy");
+        companyNameColumn.setMinWidth(200);
+        companyNameColumn.setCellValueFactory(new PropertyValueFactory<>("companyName"));
+
+        TableColumn<Supplier, String> phoneColumn = new TableColumn<>("Telefon");
+        phoneColumn.setMinWidth(100);
+        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
+
+        TableColumn<Supplier, Address> addressColumn = new TableColumn<>("Adres");
+        addressColumn.setMinWidth(300);
+        addressColumn.setCellValueFactory(new PropertyValueFactory("address"));
+
+        TableView<Supplier> supplierTableView = new TableView<>();
+        supplierTableView.setItems(getSuppliersOfMed(medId));
         supplierTableView.getColumns().addAll(idColumn,companyNameColumn,phoneColumn,addressColumn);
 
         return supplierTableView;
@@ -321,7 +501,45 @@ public class AppFrame extends Application {
         medicineTableView.setItems(getPrescriptions());
         medicineTableView.getColumns().addAll(idColumn,givenColumn,expiresColumn,doctorColumn,patientColumn);
 
+        medicineTableView.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
+                    int presId = medicineTableView.getSelectionModel().getSelectedItem().getId();
+                    try {
+                        prescriptionElementTable = createPrescriptionElementsTable(presId);
+                        borderPane.setCenter(prescriptionElementTable);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
         return medicineTableView;
+    }
+
+    private ObservableList<PrescriptionElement> getPrescriptionsElements(int presId) throws Exception {
+        return FXCollections.observableList(acH.getPrescriptionElements(presId));
+    }
+    private TableView<PrescriptionElement> createPrescriptionElementsTable(int presId) throws Exception{
+        TableColumn<PrescriptionElement, Prescription> prescriptionColumn = new TableColumn<>("ID Recepty");
+        prescriptionColumn.setMinWidth(50);
+        prescriptionColumn.setCellValueFactory(new PropertyValueFactory<>("prescription"));
+
+        TableColumn<PrescriptionElement, Medicine> medicineColumn = new TableColumn<>("ID Leku");
+        medicineColumn.setMinWidth(50);
+        medicineColumn.setCellValueFactory(new PropertyValueFactory<>("medicine"));
+
+        TableColumn<PrescriptionElement, PrescriptionElementID> doseColumn = new TableColumn<>("Dawka");
+        doseColumn.setMinWidth(100);
+        doseColumn.setCellValueFactory(new PropertyValueFactory("dose"));
+
+        TableView<PrescriptionElement> prescriptionElementTableView = new TableView<>();
+        prescriptionElementTableView.setItems(getPrescriptionsElements(presId));
+        prescriptionElementTableView.getColumns().addAll(prescriptionColumn,medicineColumn,doseColumn);
+
+        return prescriptionElementTableView;
     }
 
     //Forms for adding entities
@@ -490,12 +708,17 @@ public class AppFrame extends Application {
     private void setUpMedicineFrom(GridPane gridPane){
         createFormHeader(gridPane,"Nowy Lek");
 
-        TextField doseField = createFormTextFiled(gridPane,"Sugerowana Dawka",1);
-        TextField inStockField = createFormTextFiled(gridPane,"Dostępne",2);
+        TextField nameField = createFormTextFiled(gridPane,"Nazwa",1);
+        TextField doseField = createFormTextFiled(gridPane,"Sugerowana Dawka",2);
+        TextField inStockField = createFormTextFiled(gridPane,"Dostępne",3);
 
-        Button submitButton = createSaveButton(gridPane,3);
+        Button submitButton = createSaveButton(gridPane,4);
         //Saving patient to database
         submitButton.setOnAction(event -> {
+            if (nameField.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Puste pole!", "Wpisz nazwę leku!");
+                return;
+            }
             if (doseField.getText().isEmpty()) {
                 showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Puste pole!", "Wpisz sugerowaną dawkę!");
                 return;
@@ -504,11 +727,12 @@ public class AppFrame extends Application {
                 showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(), "Puste pole!", "Wpisz dostępną ilość leku!");
                 return;
             }
+            String name = nameField.getText();
             String dose = doseField.getText();
             int inStock = Integer.parseInt(inStockField.getText());
 
             try {
-                trH.addMedicine(dose, inStock);
+                trH.addMedicine(name,dose, inStock);
                 //refresh table
                 medicineTable.getItems().clear();
                 medicineTable.getItems().addAll(getMedicines());
@@ -751,5 +975,26 @@ public class AppFrame extends Application {
         alert.setContentText(message);
         alert.initOwner(owner);
         alert.show();
+    }
+
+    private int showPopUpForm(String textLabel){
+        Stage popupWindow = new Stage();
+        popupWindow.initModality(Modality.APPLICATION_MODAL);
+        popupWindow.setTitle("Wpisz ID");
+        Label label1= new Label(textLabel);
+        TextField idField =  new TextField();
+        Button button1 = new Button("Szukaj");
+        final int[] id = {0};
+        button1.setOnAction(e -> {
+            id[0] = idField.getText().isEmpty() ? 0 : Integer.parseInt(idField.getText());
+            popupWindow.close();
+        });
+        VBox layout= new VBox(10);
+        layout.getChildren().addAll(label1,idField, button1);
+        layout.setAlignment(Pos.CENTER);
+        Scene scene1= new Scene(layout, 300, 250);
+        popupWindow.setScene(scene1);
+        popupWindow.showAndWait();
+        return id[0];
     }
 }

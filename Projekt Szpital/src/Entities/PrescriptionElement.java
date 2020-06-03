@@ -34,4 +34,16 @@ public class PrescriptionElement {
     public String toString() {
         return ID + " " + dose;
     }
+
+    public String getDose() {
+        return dose;
+    }
+
+    public int getMedicine() {
+        return medicine.getId();
+    }
+
+    public int getPrescription() {
+        return prescription.getId();
+    }
 }
