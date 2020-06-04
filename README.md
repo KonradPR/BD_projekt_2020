@@ -19,7 +19,7 @@ Całość API aplikacji bazodanowej w projekcie znajduje się w katalogu Handler
 Udostępnione API aplkacji bazodanowej podzielone jest na trzy opisane poniżej kategorie:
 
 ### Metody dodajace dane do bazy
-[a relative link](Projekt Szpital/src/Handlers/DataModificationHandler.java)
+[Klasa TransactionHandler](Projekt_Szpital/src/Handlers/DataModificationHandler.java)
 Interfejs służący do definiowania nowych encji oraz relacji zawarty jest w klasie TransactionHandler, która udostępnia poniższe metody:
 - addDoctor
 - addPatient
