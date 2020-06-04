@@ -55,7 +55,7 @@ Wszystkie metody udostępnianie przez wymienione klasy z rodziny Handler odpowia
 ## Istotne klasy - [LogicUtils](https://github.com/KonradPR/BD_projekt_2020/tree/master/Projekt%20Szpital/src/LogicUtils)
 Klasy, które nie odbowiadają bezpośrdenio z strukturę bazy ani za operacje na niej, umieszczono w katalogu [LogicUtils](https://github.com/KonradPR/BD_projekt_2020/tree/master/Projekt%20Szpital/src/LogicUtils).
 
-W celu ułatwienia obsługi operacji na bazie dodano typ wyliczeniowy [DosageType](https://github.com/KonradPR/BD_projekt_2020/tree/master/Projekt%20Szpital/src/LogicUtils/DosageType.java) reprezentujący jednostkę dawkowania leku, oraz udostępniający statyczne metody fromString i toString. Dość ściśle z typem DosageType związana jest klasa parser, która udostepnia metody statyczne służące do uzyskiwania z podanego Stringa wartości liczbowej opisującej dawkę oraz związaną z nią jednostkę dawkowania:
+W celu ułatwienia obsługi operacji na bazie dodano typ wyliczeniowy [DosageType](https://github.com/KonradPR/BD_projekt_2020/tree/master/Projekt%20Szpital/src/LogicUtils/DosageType.java) reprezentujący jednostkę dawkowania leku, oraz udostępniający statyczne metody fromString i toString. Dość ściśle z typem [DosageType](https://github.com/KonradPR/BD_projekt_2020/tree/master/Projekt%20Szpital/src/LogicUtils/DosageType.java) związana jest klasa [Parser](https://github.com/KonradPR/BD_projekt_2020/tree/master/Projekt%20Szpital/src/LogicUtils/Parser.java), która udostepnia metody statyczne służące do uzyskiwania z podanego Stringa wartości liczbowej opisującej dawkę oraz związaną z nią jednostkę dawkowania:
 - parseDosageUnit
 - parseDosageValue  
   
