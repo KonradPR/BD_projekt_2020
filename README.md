@@ -80,7 +80,7 @@ Klasy odpowiedzialne za interfejs graficzny znajdują się w katalogu Gui.
 
 
 ## Uwagi techniczne
-Baza hostowana jest na serwerach udostępnionych przez katedrę.
+Baza hostowana jest na serwerach udostępnionych przez AGH.
 
 
 
