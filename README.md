@@ -67,7 +67,10 @@ Dodatkowo klasa ta udostępnia szereg matod walidacyjnych używanych w klasach z
 - isValidCity
 
 ### Klasy opisujące encje
-Projekt zawiera również katalog Entities w którym znajdują się klasy opisujące poszczegulne encje które są mapowane na tabele z użyciem Hibernate.
+Projekt zawiera również katalog Entities w którym znajdują się klasy opisujące poszczególne encje które są mapowane na tabele z użyciem Hibernate.
+
+W relacji między klasą Supplier, a klasą Medicine, zdecydowano się na użycie Eager Loadingu, ze względu na uproszczenie operacji związanych z dodawaniem nowych połączeń w ramach tej relacji.
+
 
 ## GUI
 W celu lepszej prezentacji użyteczności API zaimplementowano prosty interfejs graficzny umożliwajacy interakcję z bazą przy pomocy udostępnionego API.
