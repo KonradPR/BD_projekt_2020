@@ -68,7 +68,7 @@ Dodatkowo klasa [Parser](https://github.com/KonradPR/BD_projekt_2020/tree/master
 - isValidZipCode
 - isValidCity
 
-### Klasy opisujące encje - [Entities](https://https://github.com/KonradPR/BD_projekt_2020/tree/master/Projekt%20Szpital/src/Entities)
+### Klasy opisujące encje - [Entities](https://github.com/KonradPR/BD_projekt_2020/tree/master/Projekt%20Szpital/src/Entities)
 Projekt zawiera również katalog Entities w którym znajdują się klasy opisujące poszczególne encje które są mapowane na tabele z użyciem Hibernate.
 
 W relacji między klasą [Supplier](https://github.com/KonradPR/BD_projekt_2020/tree/master/Projekt%20Szpital/src/Entities/Supplier.java), a klasą [Medicine](https://github.com/KonradPR/BD_projekt_2020/tree/master/Projekt%20Szpital/src/Entities/Medicine.java), zdecydowano się na użycie Eager Loadingu, ze względu na uproszczenie operacji związanych z dodawaniem nowych połączeń w ramach tej relacji.
