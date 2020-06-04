@@ -76,7 +76,7 @@ W relacji między klasą Supplier, a klasą Medicine, zdecydowano się na użyci
 
 ## GUI
 W celu lepszej prezentacji użyteczności API zaimplementowano prosty interfejs graficzny umożliwajacy interakcję z bazą przy pomocy udostępnionego API.
-Klasy odpowiedzialne za interfesj graficzny znajdują się w katalogu Gui.
+Klasy odpowiedzialne za interfejs graficzny znajdują się w katalogu Gui.
 
 
 ## Uwagi techniczne
