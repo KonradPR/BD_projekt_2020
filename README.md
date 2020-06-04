@@ -55,11 +55,11 @@ Wszystkie metody udostępnianie przez wymienione klasy z rodziny Handler odpowia
 ## Istotne klasy - [LogicUtils](https://github.com/KonradPR/BD_projekt_2020/tree/master/Projekt%20Szpital/src/LogicUtils)
 Klasy, które nie odbowiadają bezpośrdenio z strukturę bazy ani za operacje na niej, umieszczono w katalogu [LogicUtils](https://github.com/KonradPR/BD_projekt_2020/tree/master/Projekt%20Szpital/src/LogicUtils).
 
-W celu ułatwienia obsługi operacji na bazie dodano typ wyliczeniowy [DosageType](DosageType.java) reprezentujący jednostkę dawkowania leku, oraz udostępniający statyczne metody fromString i toString. Dość ściśle z typem DosageType związana jest klasa parser, która udostepnia metody statyczne służące do uzyskiwania z podanego Stringa wartości liczbowej opisującej dawkę oraz związaną z nią jednostkę dawkowania:
+W celu ułatwienia obsługi operacji na bazie dodano typ wyliczeniowy [DosageType](https://github.com/KonradPR/BD_projekt_2020/tree/master/Projekt%20Szpital/src/LogicUtils/DosageType.java) reprezentujący jednostkę dawkowania leku, oraz udostępniający statyczne metody fromString i toString. Dość ściśle z typem DosageType związana jest klasa parser, która udostepnia metody statyczne służące do uzyskiwania z podanego Stringa wartości liczbowej opisującej dawkę oraz związaną z nią jednostkę dawkowania:
 - parseDosageUnit
 - parseDosageValue  
   
-Dodatkowo klasa [Parser](Parser.java) udostępnia szereg matod walidacyjnych używanych w klasach z rodziny Handler w celu sprawdzania poprawności dancyh wprowadzanych przez użytkownika:  
+Dodatkowo klasa [Parser](https://github.com/KonradPR/BD_projekt_2020/tree/master/Projekt%20Szpital/src/LogicUtils/Parser.java) udostępnia szereg matod walidacyjnych używanych w klasach z rodziny Handler w celu sprawdzania poprawności dancyh wprowadzanych przez użytkownika:  
 
 - isValidEmail
 - isValidPhone
@@ -71,7 +71,7 @@ Dodatkowo klasa [Parser](Parser.java) udostępnia szereg matod walidacyjnych uż
 ### Klasy opisujące encje - [Entities](https://https://github.com/KonradPR/BD_projekt_2020/tree/master/Projekt%20Szpital/src/Entities)
 Projekt zawiera również katalog Entities w którym znajdują się klasy opisujące poszczególne encje które są mapowane na tabele z użyciem Hibernate.
 
-W relacji między klasą [Supplier](Supplier.java), a klasą [Medicine](Medicine.java), zdecydowano się na użycie Eager Loadingu, ze względu na uproszczenie operacji związanych z dodawaniem nowych połączeń w ramach tej relacji.
+W relacji między klasą [Supplier](https://github.com/KonradPR/BD_projekt_2020/tree/master/Projekt%20Szpital/src/Entities/Supplier.java), a klasą [Medicine](https://github.com/KonradPR/BD_projekt_2020/tree/master/Projekt%20Szpital/src/Entities/Medicine.java), zdecydowano się na użycie Eager Loadingu, ze względu na uproszczenie operacji związanych z dodawaniem nowych połączeń w ramach tej relacji.
 
 
 ## GUI - [GUI](https://github.com/KonradPR/BD_projekt_2020/tree/master/Projekt%20Szpital/src/Gui)
