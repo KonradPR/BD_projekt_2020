@@ -27,7 +27,7 @@ Interfejs służący do definiowania nowych encji oraz relacji zawarty jest w kl
 - addMedicineSupplier
 - addPrescription
 
-Najciekawszą z wymienionych metod jest addPrescription która dodaje nową receptę zawierajacą leki podane w formie listy oraz dawki z nimi związane również w formie listy, metoda ta korzysta z dwóch prywatnych metod klasy TransactionHandler, które został stworzone tylko do użycia w tej metodzie, jedna odpowiada zz walidację danych druga pomaga zaktualizować stan magazynu po wydaniu recepty na konkretny lek, całość jest wykonywanna w ramach jednet tranzakcji.
+Najciekawszą z wymienionych metod jest addPrescription która dodaje nową receptę zawierajacą leki podane w formie listy oraz dawki z nimi związane również w formie listy, metoda ta korzysta z dwóch prywatnych metod klasy TransactionHandler, które został stworzone tylko do użycia w tej metodzie, jedna odpowiada za walidację danych druga pomaga zaktualizować stan magazynu po wydaniu recepty na konkretny lek, całość jest wykonywanna w ramach jednet tranzakcji.
 
 ### Metody modyfikujące dane w bazie
 Interfejs służący do modyfikowania istniejący encji i relacji zawarty jest w klasie DataModificationHandler, która udostępnia poniższe metody:
@@ -55,10 +55,12 @@ Wszystkie metody udostępnianie przez wymienione klasy z rodziny Handler odpowia
 ## Istotne klasy
 Klasy, które nie odbowiadają bezpośrdenio z strukturę bazy ani za operacje na niej, umieszczono w katalogu LogicUtils.
 
-W celu ułatwienia obsługi operacji na bazie dodano typ wyliczeniowy DosageType reprezentujący jednostkę dawkowania leku, oraz udostępniający statyczne metody fromString i toString. Dość ściśle z typem DosageType związana jest klasa parser, która udostepnia metody statyczne służące do uzyskiwania z podanego Stringa wartościliczbowej opsującej dawkę oraz związaną z nią jednostkę dawkowania:
+W celu ułatwienia obsługi operacji na bazie dodano typ wyliczeniowy DosageType reprezentujący jednostkę dawkowania leku, oraz udostępniający statyczne metody fromString i toString. Dość ściśle z typem DosageType związana jest klasa parser, która udostepnia metody statyczne służące do uzyskiwania z podanego Stringa wartości liczbowej opisującej dawkę oraz związaną z nią jednostkę dawkowania:
 - parseDosageUnit
-- parseDosageValue
-Dodatkowo klasa ta udostępnia szereg matod walidacyjnych używanych w klasach z rodziny Handler w celu sprawdzania poprawności dancyh wprowadzanych rpzez użytkownika:
+- parseDosageValue  
+  
+Dodatkowo klasa ta udostępnia szereg matod walidacyjnych używanych w klasach z rodziny Handler w celu sprawdzania poprawności dancyh wprowadzanych przez użytkownika:  
+
 - isValidEmail
 - isValidPhone
 - isValidName
